@@ -33,7 +33,8 @@ public class MoveDetectorRestBean extends AbstractRestBean {
         return ResponseEntity.status(HttpStatus.OK).
                 body(super.generateReport(
                         "Move detector", moveDetector.getState(),
-                        WebPageComponent.field("Activated", moveDetector.isActivated())
+                        WebPageComponent.field("Activated", moveDetector.isActivated()),
+                        WebPageComponent.field("Reading date", moveDetector.getRecordDate())
                 ));
     }
 
