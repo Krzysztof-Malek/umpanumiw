@@ -5,6 +5,6 @@ import pl.polsl.umpa.SmartHomeComponentStateDto;
 
 public record RoomThermometerDataDto(
         SmartHomeComponentStateDto componentState,
-        int temperature, Unit unit
+        double temperature, Unit unit
 ) {
 }

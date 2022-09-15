@@ -72,7 +72,7 @@ public abstract class AbstractServiceComponent {
         this.componentUrl = componentUrl;
     }
 
-    @PostConstruct
+ //   @PostConstruct odkomentujcie jak urle wpiszecie do application.properties
     public abstract void onServerReset();
 
     protected <T, R> R sendEspRequest(

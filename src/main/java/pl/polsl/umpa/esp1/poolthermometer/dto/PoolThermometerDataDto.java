@@ -8,6 +8,6 @@ import pl.polsl.umpa.SmartHomeComponentStateDto;
 @JsonInclude(Include.NON_NULL)
 public record PoolThermometerDataDto(
         SmartHomeComponentStateDto componentState,
-        int temperature, Unit unit
+        double temperature, Unit unit
 ) {
 }
