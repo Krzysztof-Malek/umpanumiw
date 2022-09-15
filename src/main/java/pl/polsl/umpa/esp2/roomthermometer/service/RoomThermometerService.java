@@ -6,6 +6,7 @@ import pl.polsl.umpa.AbstractServiceComponent;
 import pl.polsl.umpa.AbstractSmartHomeComponentState.ComponentState;
 import pl.polsl.umpa.ComponentUrlConfiguration;
 import pl.polsl.umpa.EspSetParameterRequest;
+import pl.polsl.umpa.ThermometerReadResponse;
 import pl.polsl.umpa.esp2.roomthermometer.RoomThermometerState;
 import pl.polsl.umpa.esp2.roomthermometer.RoomThermometerStateNotFoundException;
 
@@ -25,10 +26,20 @@ public class RoomThermometerService extends AbstractServiceComponent {
     }
 
     public RoomThermometerState getRoomThermometerData() {
-        return this.sendEspRequest(
+        ThermometerReadResponse response = this.sendEspRequest(
                 RequestType.GET, this.getComponentUrl(),
-                null, RoomThermometerState.class
+                null, ThermometerReadResponse.class
         );
+        RoomThermometerState roomThermometerState = this.newThermometerRead(response);
+        return this.roomThermometerRepository.save(roomThermometerState);
+    }
+
+    private RoomThermometerState newThermometerRead(ThermometerReadResponse response) {
+        RoomThermometerState roomThermometerState = new RoomThermometerState(new Date());
+        roomThermometerState.setState(response.componentState());
+        roomThermometerState.setTemperature(response.temperature());
+        roomThermometerState.setUnit(response.unit());
+        return roomThermometerState;
     }
 
     public RoomThermometerState setRoomThermometerComponentState(ComponentState newState) {

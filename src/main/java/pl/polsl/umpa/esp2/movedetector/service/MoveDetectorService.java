@@ -8,6 +8,7 @@ import pl.polsl.umpa.ComponentUrlConfiguration;
 import pl.polsl.umpa.EspSetParameterRequest;
 import pl.polsl.umpa.esp2.movedetector.MoveDetectorState;
 import pl.polsl.umpa.esp2.movedetector.MoveDetectorStateNotFoundException;
+import pl.polsl.umpa.esp2.movedetector.dto.EspReadResponse;
 
 import java.util.Date;
 
@@ -36,10 +37,14 @@ public class MoveDetectorService extends AbstractServiceComponent {
     }
 
     private MoveDetectorState setParameters(EspSetParameterRequest setParameterRequest) {
-        return this.sendEspRequest(
+        EspReadResponse response = this.sendEspRequest(
                 RequestType.POST, this.getComponentUrl(),
-                setParameterRequest, MoveDetectorState.class
+                setParameterRequest, EspReadResponse.class
         );
+        MoveDetectorState moveDetectorState = new MoveDetectorState(new Date());
+        moveDetectorState.setState(response.componentState());
+        moveDetectorState.setActivated(response.activated());
+        return this.moveDetectorRepository.save(moveDetectorState);
     }
 
     private MoveDetectorState getLastMoveDetectorState() throws MoveDetectorStateNotFoundException {

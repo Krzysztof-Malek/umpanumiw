@@ -6,8 +6,10 @@ import pl.polsl.umpa.AbstractServiceComponent;
 import pl.polsl.umpa.AbstractSmartHomeComponentState.ComponentState;
 import pl.polsl.umpa.ComponentUrlConfiguration;
 import pl.polsl.umpa.EspSetParameterRequest;
+import pl.polsl.umpa.ThermometerReadResponse;
 import pl.polsl.umpa.esp1.poolthermometer.PoolThermometerState;
 import pl.polsl.umpa.esp1.poolthermometer.PoolThermometerStateNotFoundException;
+import pl.polsl.umpa.esp2.roomthermometer.RoomThermometerState;
 
 import java.util.Date;
 
@@ -36,10 +38,20 @@ public class PoolThermometerService extends AbstractServiceComponent {
     }
 
     private PoolThermometerState setParameters(EspSetParameterRequest setParameterRequest) {
-        return this.sendEspRequest(
+        ThermometerReadResponse response = this.sendEspRequest(
                 RequestType.POST, this.getComponentUrl(),
-                setParameterRequest, PoolThermometerState.class
+                setParameterRequest, ThermometerReadResponse.class
         );
+        PoolThermometerState thermometerState = this.newThermometerRead(response);
+        return this.poolThermometerRepository.save(thermometerState);
+    }
+
+    private PoolThermometerState newThermometerRead(ThermometerReadResponse response) {
+        PoolThermometerState poolThermometerState = new PoolThermometerState(new Date());
+        poolThermometerState.setState(response.componentState());
+        poolThermometerState.setTemperature(response.temperature());
+        poolThermometerState.setUnit(response.unit());
+        return poolThermometerState;
     }
 
     private PoolThermometerState getLastPoolThermometerMeasurement() throws PoolThermometerStateNotFoundException {

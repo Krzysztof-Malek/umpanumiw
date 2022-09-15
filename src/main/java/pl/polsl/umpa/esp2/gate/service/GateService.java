@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import pl.polsl.umpa.AbstractServiceComponent;
 import pl.polsl.umpa.AbstractSmartHomeComponentState.ComponentState;
 import pl.polsl.umpa.ComponentUrlConfiguration;
+import pl.polsl.umpa.EspSetComponentStateResponse;
 import pl.polsl.umpa.EspSetParameterRequest;
 import pl.polsl.umpa.esp2.gate.GateState;
 import pl.polsl.umpa.esp2.gate.GateStateNotFoundException;
@@ -39,10 +40,13 @@ public class GateService extends AbstractServiceComponent {
     }
 
     private GateState setParameters(EspSetParameterRequest setParameterRequest) {
-        return this.sendEspRequest(
+        EspSetComponentStateResponse response = this.sendEspRequest(
                 RequestType.POST, this.getComponentUrl(),
-                setParameterRequest, GateState.class
+                setParameterRequest, EspSetComponentStateResponse.class
         );
+        GateState gateState = new GateState(new Date());
+        gateState.setState(response.componentState());
+        return this.gateRepository.save(gateState);
     }
 
     @Override

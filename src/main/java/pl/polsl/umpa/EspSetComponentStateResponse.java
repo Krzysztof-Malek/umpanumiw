@@ -4,5 +4,5 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import pl.polsl.umpa.AbstractSmartHomeComponentState.ComponentState;
 
 @JsonInclude
-public record EspSetParameterRequest(ComponentState newState) {
+public record EspSetComponentStateResponse(ComponentState componentState) {
 }
